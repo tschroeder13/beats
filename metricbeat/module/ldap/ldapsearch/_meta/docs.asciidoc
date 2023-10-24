@@ -1,0 +1,1 @@
+This is the ldapsearch metricset of the module ldap.

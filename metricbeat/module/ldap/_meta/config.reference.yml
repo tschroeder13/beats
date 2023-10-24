@@ -1,0 +1,30 @@
+# Module: ldap
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/8.6/metricbeat-module-ldap.html
+
+- module: ldap
+  metricsets: ["ldapsearch"]
+  enabled: true
+  period: 10s
+  # When ssl is enabled metricset 'ldapsearch" only can contact one host,
+  # which should be named here aswell
+  hosts: ["localhost"]
+
+  # Optional SSL. By default is off.
+  #ssl.enabled: true
+
+  # List of root certificates for TLS server verifications
+  # When ssl is enabled metricset 'ldapsearch" only can contact one host
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # configure 'ldapsearch' metricset's searches. Every search needs an unique name
+  #ldapsearch.searches:
+  #  - name: "some unique name"
+  #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
+  #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
+  #    bind_dn: "${LDAP_USER}"
+  #    bind_pw: "${LDAP_PWD}"
+  #  - name: "some other unique name"
+  #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
+  #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
+  #    bind_dn: "${LDAP_USER}"
+  #    bind_pw: "${LDAP_PWD}"

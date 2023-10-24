@@ -1,0 +1,10 @@
+- key: ldap
+  title: "ldap"
+  release: beta
+  description: >
+    ldap module
+  fields:
+    - name: ldap
+      type: group
+      description: >
+      fields:
