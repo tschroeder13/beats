@@ -1,10 +1,13 @@
 package ldapsearch
 
 import (
+	"fmt"
+
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/v7/metricbeat/helper/ldaphelper"
 	"github.com/elastic/beats/v7/metricbeat/mb"
 	"github.com/elastic/elastic-agent-libs/mapstr"
+	"github.com/elastic/elastic-agent-libs/transport/tlscommon"
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -20,8 +23,8 @@ type search struct {
 	// all events `ldap.performance.*`
 	Namespace string `config:"name"`
 	LdapUrl   string `config:"url"`
-	// Path to the server's trusted root CA certificate
-	CaCertPath string `config:"cert_path"`
+	// // Path to the server's trusted root CA certificate
+	// CaCertPath string `config:"cert_path"`
 	// The user's DN to search with
 	BindDN string `config:"bind_dn"`
 	// The user's password
@@ -34,6 +37,7 @@ type search struct {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
+	TLS *tlscommon.Config `config:"ssl"`
 	// counter int
 	Searches []search `config:"ldapsearch.searches" validate:"nonzero,required"`
 }
@@ -55,6 +59,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) error {
+
 	for _, s := range m.Searches {
 		err := m.searchLdap(s, report)
 		if err != nil {
@@ -65,18 +70,43 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 }
 
 func (m *MetricSet) searchLdap(s search, reporter mb.ReporterV2) error {
-	sr, err := ldaphelper.LdapSearch(s.LdapUrl,
-		s.CaCertPath,
-		s.BindDN,
-		s.BindSecret,
-	)
-	if err != nil {
-		reporter.Error(err)
+	if !m.TLS.IsEnabled() {
+		sr, err := ldaphelper.LdapSearch(s.LdapUrl,
+			s.BindDN,
+			s.BindSecret,
+		)
+		sr.PrettyPrint(2)
+		if err != nil {
+			reporter.Error(err)
+		}
+		reporter.Event(mb.Event{
+			MetricSetFields: mapstr.M{
+				"ldapsearch.result": sr.Entries,
+			},
+		})
+
 	}
-	reporter.Event(mb.Event{
-		MetricSetFields: mapstr.M{
-			"ldapsearch.result": sr.Entries,
-		},
-	})
+	if m.TLS.IsEnabled() {
+		println("PING!")
+		tlsConfig, err := tlscommon.LoadTLSConfig(m.TLS)
+		if err != nil {
+			return fmt.Errorf("could not load provided TLS configuration: %w", err)
+		}
+		sr, err := ldaphelper.LdapsSearch(s.LdapUrl,
+			tlsConfig.ToConfig(),
+			s.BindDN,
+			s.BindSecret,
+		)
+		sr.PrettyPrint(2)
+		if err != nil {
+			reporter.Error(err)
+		}
+		reporter.Event(mb.Event{
+			MetricSetFields: mapstr.M{
+				"ldapsearch.result": sr.Entries,
+			},
+		})
+	}
+
 	return nil
 }

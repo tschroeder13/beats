@@ -57,6 +57,7 @@ grouped in the following categories:
 * <<exported-fields-kubernetes-processor>>
 * <<exported-fields-kubernetes>>
 * <<exported-fields-kvm>>
+* <<exported-fields-ldap>>
 * <<exported-fields-linux>>
 * <<exported-fields-logstash>>
 * <<exported-fields-memcached>>
@@ -47037,6 +47038,36 @@ status
 +
 --
 Domain state
+
+
+type: keyword
+
+--
+
+[[exported-fields-ldap]]
+== ldap fields
+
+ldap module
+
+
+
+[float]
+=== ldap
+
+
+
+
+[float]
+=== ldapsearch
+
+ldapsearch
+
+
+
+*`ldap.ldapsearch.example`*::
++
+--
+Example field
 
 
 type: keyword

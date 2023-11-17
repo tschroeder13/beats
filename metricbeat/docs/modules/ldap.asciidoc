@@ -1,3 +1,31 @@
+////
+This file is generated! See scripts/mage/docs_collector.go
+////
+
+:modulename: ldap
+:edit_url: https://github.com/elastic/beats/edit/main/metricbeat/module/ldap/_meta/docs.asciidoc
+
+
+[[metricbeat-module-ldap]]
+== ldap module
+
+beta[]
+
+This is the ldap module.
+
+
+
+:edit_url:
+
+[float]
+=== Example configuration
+
+The ldap module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
 # Module: ldap
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/8.6/metricbeat-module-ldap.html
 
@@ -23,10 +51,20 @@
   #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
   #    bind_dn: "${LDAP_USER}"
   #    bind_pw: "${LDAP_PWD}"
-  #    mode: "count"
   #  - name: "some other unique name"
   #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
   #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
   #    bind_dn: "${LDAP_USER}"
   #    bind_pw: "${LDAP_PWD}"
-  #    mode: "userAttributes"
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-ldap-ldapsearch,ldapsearch>>
+
+include::ldap/ldapsearch.asciidoc[]
+
+:edit_url!:

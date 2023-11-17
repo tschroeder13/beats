@@ -1,0 +1,18 @@
+# Module: ldap
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-ldap.html
+
+# Module: ldap
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/8.6/metricbeat-module-ldap.html
+
+- module: ldap
+  metricsets: ["ldapsearch"]
+  enabled: true
+  period: 10s
+  hosts: ["localhost"]
+  ldapsearch.searches:
+    - name: "MDAD Drv - trace info"
+      url: "ldaps://fr05430vmx.fr.ge.conti.de:636/cn=MDAD,cn=driverset0,o=system?cn,DirXML-TraceLevel,DirXML-TraceFile?sub?(objectClass=DirXML-Driver)#never#10#60#false"
+      cert_path: "/home/uic75084/dev/IDM-D-CA.cer"
+      bind_dn: "${LDAP_USER}"
+      bind_pw: "${LDAP_PWD}"
+

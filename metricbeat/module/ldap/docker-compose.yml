@@ -2,18 +2,33 @@ version: '2.3'
 
 services:
   ldap:
+    user: "500242522"
     image: bitnami/openldap:latest
-    build:
-      context: ./_meta
+    # build:
+    #   context: ./_meta
     ports:
       - '1389:1389'
       - '1636:1636'
+    volumes:
+      - ./_meta/certs:/opt/bitnami/openldap/certs
     environment:
       - LDAP_URI=ldap://openldap:1389
       - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=adminpassword
       - LDAP_USERS=user01,user02,user03
       - LDAP_PASSWORDS=password1,password2,password3
-      - LDAP_CUSTOM_LDIF_DIR=./_meta/res
       - LDAP_ROOT=dc=example,dc=org
       - LDAP_ADMIN_DN=cn=admin,dc=example,dc=org
+      - LDAP_ENABLE_TLS=yes
+      - LDAP_TLS_CERT_FILE=/opt/bitnami/openldap/certs/domain.crt
+      - LDAP_TLS_KEY_FILE=/opt/bitnami/openldap/certs/domain.key
+      - LDAP_TLS_CA_FILE=/opt/bitnami/openldap/certs/rootCA.crt
+      - LDAP_LOG_LEVEL=9
+      - BITNAMI_DEBUG=true
+    healthcheck:
+      test: ldapsearch -H ldap://127.0.0.1:1389 -D cn=admin,dc=example,dc=org -w adminpassword -b dc=example,dc=org
+      interval: 10s
+      timeout: 20s
+      retries: 3
+      start_period: 5s
+

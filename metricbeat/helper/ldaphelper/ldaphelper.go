@@ -2,11 +2,9 @@ package ldaphelper
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"fmt"
 	"log"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/go-ldap/ldap/v3"
@@ -55,21 +53,50 @@ func NewLdapUrl(s string) (*ldapUrl, error) {
 		Filter:     query[2],
 	}, nil
 }
-
-func LdapSearch(uri string, cacertpath string, binddn string, bindpw string) (*ldap.SearchResult, error) {
+func LdapSearch(uri string, binddn string, bindpw string) (*ldap.SearchResult, error) {
 	u, err := NewLdapUrl(uri)
 	if err != nil {
 		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}
-	certPool := x509.NewCertPool()
-	pem, err := os.ReadFile(cacertpath)
+	l, err := ldap.DialURL(uri)
 	if err != nil {
-		return nil, fmt.Errorf("CA file could not be opened: %w", err)
+		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}
-	certPool.AppendCertsFromPEM(pem)
-	tlsConf := &tls.Config{RootCAs: certPool}
-	// ldap.Logger(log.Named("LDAP").)
-	l, err := ldap.DialURL(uri, ldap.DialWithTLSConfig(tlsConf))
+	defer l.Close()
+	err = l.Bind(binddn, bindpw)
+	if err != nil {
+		log.Fatal(err)
+	}
+	searchRequest := ldap.NewSearchRequest(
+		u.BaseDN,
+		u.Scope,
+		ldap.NeverDerefAliases, 0, 0, false,
+		u.Filter,
+		u.Attributes,
+		nil,
+	)
+
+	sr, err := l.Search(searchRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return sr, err
+}
+func LdapsSearch(uri string, tls *tls.Config, binddn string, bindpw string) (*ldap.SearchResult, error) {
+	u, err := NewLdapUrl(uri)
+	if err != nil {
+		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
+	}
+	// println("PONG!" + cacertpath)
+	// certPool := x509.NewCertPool()
+	// pem, err := os.ReadFile(cacertpath)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("CA file could not be opened: %w", err)
+	// }
+	// certPool.AppendCertsFromPEM(pem)
+	// tlsConf := &tls.Config{RootCAs: certPool}
+	// // ldap.Logger(log.Named("LDAP").)
+	l, err := ldap.DialURL(uri, ldap.DialWithTLSConfig(tls))
 	if err != nil {
 		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}

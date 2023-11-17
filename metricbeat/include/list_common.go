@@ -99,6 +99,8 @@ import (
 	_ "github.com/elastic/beats/v7/metricbeat/module/kvm"
 	_ "github.com/elastic/beats/v7/metricbeat/module/kvm/dommemstat"
 	_ "github.com/elastic/beats/v7/metricbeat/module/kvm/status"
+	_ "github.com/elastic/beats/v7/metricbeat/module/ldap"
+	_ "github.com/elastic/beats/v7/metricbeat/module/ldap/ldapsearch"
 	_ "github.com/elastic/beats/v7/metricbeat/module/linux"
 	_ "github.com/elastic/beats/v7/metricbeat/module/linux/conntrack"
 	_ "github.com/elastic/beats/v7/metricbeat/module/linux/iostat"
