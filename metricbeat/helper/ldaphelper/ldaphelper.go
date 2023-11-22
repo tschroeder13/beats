@@ -1,3 +1,6 @@
+/*
+Elastic Metricbeat helper for LDAP connectivity
+*/
 package ldaphelper
 
 import (
@@ -5,11 +8,13 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"sort"
 	"strings"
 
 	"github.com/go-ldap/ldap/v3"
 )
 
+// ldapUrl stores all values needed for an ldapsearch
 type ldapUrl struct {
 	Scheme     string
 	Hostname   string
@@ -20,11 +25,7 @@ type ldapUrl struct {
 	Filter     string
 }
 
-// type LdapConnection struct {
-// 	*ldap.Conn
-// 	logger *logp.Logger
-// }
-
+// Generate a ldapUrl from a URL string, e.g. copied from advanced options in Apache Directory Studio
 func NewLdapUrl(s string) (*ldapUrl, error) {
 	u, err := url.Parse(s)
 	if err != nil {
@@ -53,12 +54,20 @@ func NewLdapUrl(s string) (*ldapUrl, error) {
 		Filter:     query[2],
 	}, nil
 }
+
+// rebuild an connection string from ldapUrl for connection purpose only
+func (l ldapUrl) ToConnectionString() string {
+	return l.Scheme + "://" + l.Hostname + ":" + l.Port
+}
+
+// Search an LDAP by URL (e.g. from Apache Directory Studio)
 func LdapSearch(uri string, binddn string, bindpw string) (*ldap.SearchResult, error) {
 	u, err := NewLdapUrl(uri)
 	if err != nil {
 		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}
-	l, err := ldap.DialURL(uri)
+	s := u.ToConnectionString()
+	l, err := ldap.DialURL(s)
 	if err != nil {
 		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}
@@ -82,21 +91,15 @@ func LdapSearch(uri string, binddn string, bindpw string) (*ldap.SearchResult, e
 	}
 	return sr, err
 }
+
+// Search an LDAP by URL (e.g. from Apache Directory Studio) with SSL enabled
 func LdapsSearch(uri string, tls *tls.Config, binddn string, bindpw string) (*ldap.SearchResult, error) {
 	u, err := NewLdapUrl(uri)
 	if err != nil {
-		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
+		return nil, fmt.Errorf("Provided Uri not parsable: %w", err)
 	}
-	// println("PONG!" + cacertpath)
-	// certPool := x509.NewCertPool()
-	// pem, err := os.ReadFile(cacertpath)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("CA file could not be opened: %w", err)
-	// }
-	// certPool.AppendCertsFromPEM(pem)
-	// tlsConf := &tls.Config{RootCAs: certPool}
-	// // ldap.Logger(log.Named("LDAP").)
-	l, err := ldap.DialURL(uri, ldap.DialWithTLSConfig(tls))
+	s := u.ToConnectionString()
+	l, err := ldap.DialURL(s, ldap.DialWithTLSConfig(tls))
 	if err != nil {
 		return nil, fmt.Errorf("Provided URI not parsable: %w", err)
 	}
@@ -119,4 +122,30 @@ func LdapsSearch(uri string, tls *tls.Config, binddn string, bindpw string) (*ld
 		log.Fatal(err)
 	}
 	return sr, err
+}
+
+// Convert an entry*s Distinguished Name into a string like "some.longer.name.space"
+func DnToNs(dn string) string {
+	dnArr := strings.Split(dn, ",")
+	for i := 0; i < len(dnArr); i++ {
+		dnArr[i] = strings.Split(dnArr[i], "=")[1]
+	}
+	res := ""
+	for i := len(dnArr) - 1; i >= 0; i-- {
+		res += dnArr[i]
+		if i != 0 {
+			res += "."
+		}
+	}
+	return res
+}
+
+// sort a []*ldap.Entry by entry's DN length/depth - shortest to longest
+func SortSRbyDepth(entries []*ldap.Entry) []*ldap.Entry {
+	sort.SliceStable(entries[:], func(i, j int) bool {
+		a := DnToNs(entries[i].DN)
+		b := DnToNs(entries[j].DN)
+		return len(strings.Split(a, ".")) < len(strings.Split(b, "."))
+	})
+	return entries
 }

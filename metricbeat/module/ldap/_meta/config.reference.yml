@@ -5,28 +5,26 @@
   metricsets: ["ldapsearch"]
   enabled: true
   period: 10s
-  # When ssl is enabled metricset 'ldapsearch" only can contact one host,
-  # which should be named here aswell
+  # searches will be carried out against these hosts
   hosts: ["localhost"]
+  # # consider using secrets keystore as described here:
+  # # https://www.elastic.co/guide/en/beats/metricbeat/current/keystore.html
+  # bind_dn: "${LDAP_USER}"
+  # bind_pw: "${LDAP_PWD}"
 
-  # Optional SSL. By default is off.
+  # # Optional SSL.
+  # # for further information see https://www.elastic.co/guide/en/beats/metricbeat/current/configuration-ssl.html
+  # # By default is off.
   #ssl.enabled: true
+  # ssl.certificate_authorities: ["../some/relative/path"]
+  # ssl.certificate: ../some/relative/path
+  # ssl.key: ../some/relative/path
 
-  # List of root certificates for TLS server verifications
-  # When ssl is enabled metricset 'ldapsearch" only can contact one host
-  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
-
-  # configure 'ldapsearch' metricset's searches. Every search needs an unique name
+  # # configure 'ldapsearch' metricset's searches.
   #ldapsearch.searches:
+  # # Every search needs an unique namespace,
+  # # which is later used for identification
   #  - name: "some unique name"
+  # # host portion of url is *NOT* used (see "hosts")
   #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
-  #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
-  #    bind_dn: "${LDAP_USER}"
-  #    bind_pw: "${LDAP_PWD}"
-  #    mode: "count"
-  #  - name: "some other unique name"
-  #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
-  #    cert_path: "some path" ## to be replaced with module's ssl.certificate_authorities
-  #    bind_dn: "${LDAP_USER}"
-  #    bind_pw: "${LDAP_PWD}"
-  #    mode: "userAttributes"
+
