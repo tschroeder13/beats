@@ -1,1 +1,77 @@
-This is the ldapsearch metricset of the module ldap.
+The 'ldapsearch' metricset of the module ldap collects metrics from LDAP enabled directory servers.
+
+[float]
+=== Features and configuration
+Tested with openLDAP.
+
+To collect metrics from LDAP servers, define a LDAP URL as defined in https://docs.oracle.com/javase/jndi/tutorial/ldap/misc/url.html[Oracle's "LDAP & LDAPS URLs" Article] with following format:
+[source,http]
+----
+ldap://host:port/dn?attributes?scope?filter?extensions
+----
+
+For example, to get the full virtual "cn=Monitor" subtree configure the following ldapsearch
+
+[source,yaml]
+----
+- module: ldap
+  metricsets: ["ldapsearch"]
+  enabled: true
+  period: 10s
+  # searches will be carried out against the hosts specified in ldapsearches.searches
+  # this is currently only the default
+  hosts: ["localhost"] <1>
+  # # consider using secrets keystore as described here:
+  # #
+  bind_dn: "${LDAP_USER}" <2>
+  bind_pw: "${LDAP_PWD}" <2>
+
+  # # Optional SSL.
+  # # for further information see https://www.elastic.co/guide/en/beats/metricbeat/current/configuration-ssl.html
+  # # By default is off.
+  ssl.enabled: true
+  ssl.certificate_authorities: ["../some/relative/path"]
+  ssl.certificate: ../some/relative/path
+  ssl.key: ../some/relative/path
+  ssl.key_passphrase: "${keyfile_passphrase}" <2>
+  ldapsearch.searches:
+    - name: "some unique name" <3>
+      url: "ldaps://localhost:1636/cn=monitor?+?sub?(objectClass=*)#0#10#60#false" <4>
+    - name: "some other name" <5>
+      url: "ldaps://localhost:1636/ou=users,dc=example,dc=org?+?sub?(objectClass=inetOrgPerson)"
+----
+<1> Currentyl the "hosts" field is not used. LEft in for future use.
+<2> Use https://www.elastic.co/guide/en/beats/metricbeat/current/keystore.html[Beats Keystore feature] to avoid clear text credentials in configuration files
+<3> The "name" filed is later used to identify the event
+<4> The URL consists of:
+
+* Scheme (ldap/ldaps)
+* Host and port of the LDAP server
+* Base DN of the search
+* The URL's query portion (?) consists of
+** List of return attributes - '*' wildcard for all user attributes, '+' wildcard includes operational attributes, too
+** Scope (object="", one level = "one", subtree = "sub")
+** LDAP search Filter
+*Extensions
+** Dereference Aliases (see DerefAliases below) - default value is 0
+** Size Limit - default value is 0
+** Time Limit - default value is 0
+** Types only - default value is false
+<5> Multiple LDAP searches are possible - resulting events are tagged with that name.
+
+==== go-ldap DerefAliases
+[source,go]
+----
+const (
+	NeverDerefAliases   = 0
+	DerefInSearching    = 1
+	DerefFindingBaseObj = 2
+	DerefAlways         = 3
+)
+----
+
+[float]
+=== Exposed fields, dashboards, indexes, etc.
+Because this module is very general and can be tailored for any application that
+exposes its data over LDAP, it comes with exposed field descriptions (neraly),
+dashboards, or index patterns.

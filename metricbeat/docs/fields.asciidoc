@@ -47045,32 +47045,63 @@ type: keyword
 --
 
 [[exported-fields-ldap]]
-== ldap fields
+== LDAP fields
 
-ldap module
+LDAP data and metrics collection
 
 
 
 [float]
 === ldap
 
+`ldap` contains metrics and data that were obtained from LDAP searches
 
 
 
 [float]
 === ldapsearch
 
-ldapsearch
+ldapsearch will generate one event for every result item. To group them later, some fields are aggregated to identify related events
 
 
 
-*`ldap.ldapsearch.example`*::
+*`ldap.ldapsearch.search name`*::
 +
 --
-Example field
+The name component of ldapsearch.searches in modules/ldap.yml configuration
 
 
 type: keyword
+
+--
+
+*`ldap.ldapsearch.namespace`*::
++
+--
+Reformated reversed entry DN, e.g. org.example.users.user01
+
+
+type: keyword
+
+--
+
+*`ldap.ldapsearch.total`*::
++
+--
+Total result count of the search
+
+
+type: long
+
+--
+
+*`ldap.ldapsearch.count`*::
++
+--
+Sequence number of the current result item
+
+
+type: long
 
 --
 

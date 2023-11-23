@@ -7,12 +7,28 @@ This file is generated! See scripts/mage/docs_collector.go
 
 
 [[metricbeat-module-ldap]]
-== ldap module
+== LDAP module
 
 beta[]
 
-This is the ldap module.
+This module collects data from LDAP servers.
 
+To collect metrics, {beatnane_uc} communicates with any LDAP enabled directory service.
+
+Its main purpose is to collect metrics from the virtual subtree "cn=Monitor"
+which is provided by servers like:
+
+* Open LDAP
+* RedHat / Fedora / 389 Directory Server
+* Sun / Oracle Directory Server Enterprise Edition
+* Novell / NetIQ eDirectory Server
+* IBM Tivoli Directory Server
+* OpenDj / OpenDS / Oracle Unified Directory
+
+[float]
+=== Compatibility
+
+The LDAP module is tested with openLDAP and NetIQ eDirectory but should work with any LDAP enabled server (excluding the mentioned cn=Monitor feature)
 
 
 :edit_url:
@@ -20,7 +36,7 @@ This is the ldap module.
 [float]
 === Example configuration
 
-The ldap module supports the standard configuration options that are described
+The LDAP module supports the standard configuration options that are described
 in <<configuration-metricbeat>>. Here is an example configuration:
 
 [source,yaml]
@@ -33,7 +49,8 @@ metricbeat.modules:
   metricsets: ["ldapsearch"]
   enabled: true
   period: 10s
-  # searches will be carried out against these hosts
+  # searches will be carried out against the hosts specified in ldapsearches.searches
+  # this is currently only the default
   hosts: ["localhost"]
   # # consider using secrets keystore as described here:
   # # https://www.elastic.co/guide/en/beats/metricbeat/current/keystore.html
@@ -47,19 +64,14 @@ metricbeat.modules:
   # ssl.certificate_authorities: ["../some/relative/path"]
   # ssl.certificate: ../some/relative/path
   # ssl.key: ../some/relative/path
+  # ssl.key_passphrase: "${keyfile_passphrase}" ## see bind credentials for further info
 
   # # configure 'ldapsearch' metricset's searches.
   #ldapsearch.searches:
   # # Every search needs an unique namespace,
   # # which is later used for identification
   #  - name: "some unique name"
-  # # host portion of url is *NOT* used (see "hosts")
   #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
-  # # mode options:
-  # #     - count: returns entry count
-  # #     - requested: returns requested attributes from url for all result entries
-  # #     - all: returns all attributes (user and operational) for all result entries
-  #    mode: "count"
 
 ----
 

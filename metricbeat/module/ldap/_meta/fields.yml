@@ -1,10 +1,11 @@
 - key: ldap
-  title: "ldap"
+  title: "LDAP"
   release: beta
   description: >
-    ldap module
+    LDAP data and metrics collection
   fields:
     - name: ldap
       type: group
       description: >
+        `ldap` contains metrics and data that were obtained from LDAP searches
       fields:

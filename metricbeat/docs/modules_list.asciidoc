@@ -199,7 +199,7 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-module-kvm,KVM>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .2+| .2+|  |<<metricbeat-metricset-kvm-dommemstat,dommemstat>> beta[]  
 |<<metricbeat-metricset-kvm-status,status>> beta[]  
-|<<metricbeat-module-ldap,ldap>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+|<<metricbeat-module-ldap,LDAP>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .1+| .1+|  |<<metricbeat-metricset-ldap-ldapsearch,ldapsearch>> beta[]  
 |<<metricbeat-module-linux,Linux>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .7+| .7+|  |<<metricbeat-metricset-linux-conntrack,conntrack>> beta[]  

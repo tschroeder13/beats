@@ -2,9 +2,22 @@
   type: group
   release: beta
   description: >
-    ldapsearch
+    ldapsearch will generate one event for every result item. To group them later,
+    some fields are aggregated to identify related events
   fields:
-    - name: example
+    - name: search name
       type: keyword
       description: >
-        Example field
+        The name component of ldapsearch.searches in modules/ldap.yml configuration
+    - name: namespace
+      type: keyword
+      description: >
+        Reformated reversed entry DN, e.g. org.example.users.user01
+    - name: total
+      type: long
+      description: >
+        Total result count of the search
+    - name: count
+      type: long
+      description: >
+        Sequence number of the current result item

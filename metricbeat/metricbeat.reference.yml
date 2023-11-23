@@ -644,7 +644,7 @@ metricbeat.modules:
   # Timeout to connect to Libvirt server
   #timeout: 1s
 
-#--------------------------------- Ldap Module ---------------------------------
+#--------------------------------- LDAP Module ---------------------------------
 # Module: ldap
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/8.6/metricbeat-module-ldap.html
 
@@ -652,7 +652,8 @@ metricbeat.modules:
   metricsets: ["ldapsearch"]
   enabled: true
   period: 10s
-  # searches will be carried out against these hosts
+  # searches will be carried out against the hosts specified in ldapsearches.searches
+  # this is currently only the default
   hosts: ["localhost"]
   # # consider using secrets keystore as described here:
   # # https://www.elastic.co/guide/en/beats/metricbeat/current/keystore.html
@@ -666,19 +667,14 @@ metricbeat.modules:
   # ssl.certificate_authorities: ["../some/relative/path"]
   # ssl.certificate: ../some/relative/path
   # ssl.key: ../some/relative/path
+  # ssl.key_passphrase: "${keyfile_passphrase}" ## see bind credentials for further info
 
   # # configure 'ldapsearch' metricset's searches.
   #ldapsearch.searches:
   # # Every search needs an unique namespace,
   # # which is later used for identification
   #  - name: "some unique name"
-  # # host portion of url is *NOT* used (see "hosts")
   #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
-  # # mode options:
-  # #     - count: returns entry count
-  # #     - requested: returns requested attributes from url for all result entries
-  # #     - all: returns all attributes (user and operational) for all result entries
-  #    mode: "count"
 
 
 #-------------------------------- Linux Module --------------------------------

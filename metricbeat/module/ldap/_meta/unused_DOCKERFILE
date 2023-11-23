@@ -1,6 +1,0 @@
-# Copyright VMware, Inc.
-# SPDX-License-Identifier: APACHE-2.0
-
-FROM bitnami/openldap:latest
-
-HEALTHCHECK CMD ldapsearch -H ldap://127.0.0.1:1389 -D cn=admin,dc=example,dc=org -w adminpassword -b cn=admin,dc=example,dc=org

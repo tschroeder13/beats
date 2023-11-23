@@ -32,5 +32,5 @@ func init() {
 // AssetLdap returns asset data.
 // This is the base64 encoded zlib format compressed contents of module/ldap.
 func AssetLdap() string {
-	return "eJx8j0GugyAARPecYuLeC7D4u38QKtOWiEIA03r7BojGEtK3gwlvhhEzdwmrlRdAMslSYsjHQQCBlipS4sakBKAZp2B8Mm6V+BMAykssTm+WArgbWh1lSUasauHpzqTdU+IR3HbcdIzfltYUqcL0PKOeM9MuP+j2Vbr2dsp1Dt9q8eXbV+qemfvLBd1kP9oz/1VYS8UnAAD//1C3bKk="
+	return "eJysks9u2zwQxO96ikHOib6vVx0KFMixKIo2DxCGGslE+Eddrurq7YuVLcdx3AIFsgfB1q5mfhzuHZ65dIi9mxpAg0Z2uPl8/+nrTQMII11lhyeqa4Ce1UuYNJTc4WMDADaK3qmDyz0SVYKv8CVGeptrgCEw9rVbx++QXeLJ0EqXiR1GKfP25oqN1aN99AhfsrqQ68nMjFcC3TnFnkKUJxthj0FKOjBWOvE71qPcOdQl2GH01LqGaHWZzlZ/wLd6Ucc+xIiRmeKUKJngT2bFUMR+yQJhnaMiKFOLh3Lwh+6YEJ1Sbl9J15J4PBWcEG4chaNT9tCC0DNrGEw0ru9Ws3qmcBnIeShHZPvzqr8l88xlX6S/6P0lB6uHHVdF+JKmku3sZThLqN1uDCEjlX6OrP9Zu11StC0YwjiLOy7ZW2h71sn5d0T+xqFIWvMTu6NqQWaVBfdfbsF2bFFkbPnLpSmynSulrs//P1xF1KIuXsWLJY//GKdpbTvjy3yIU3fEm3V+AVjn3gngO3/MzJ7Ic3qibO5+FrG7Pdvm5ncAAAD//9nBRvo="
 }

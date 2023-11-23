@@ -5,7 +5,7 @@ This file is generated! See scripts/mage/docs_collector.go
 
 
 [[metricbeat-metricset-ldap-ldapsearch]]
-=== ldap ldapsearch metricset
+=== LDAP ldapsearch metricset
 
 beta[]
 

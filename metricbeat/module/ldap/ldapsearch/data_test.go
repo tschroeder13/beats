@@ -6,17 +6,19 @@ import (
 	"crypto/tls"
 	"testing"
 
-	"github.com/elastic/beats/v7/metricbeat/helper/ldaphelper"
+	"github.com/elastic/beats/v7/libbeat/tests/compose"
+	"github.com/elastic/beats/v7/metricbeat/helper/ldapsearch"
 )
 
 func TestEventMapping(t *testing.T) {
+	compose.EnsureUp(t, "ldap")
 	config := map[string]string{
 		"bind_dn": "cn=admin,dc=example,dc=org",
 		"bind_pw": "adminpassword",
 		"period":  "10s",
 		"url":     "ldaps://localhost:1636/cn=monitor?+?sub?(objectClass=*)",
 	}
-	sr, err := ldaphelper.LdapsSearch(
+	sr, err := ldapsearch.LdapsSearch(
 		config["url"],
 		&tls.Config{InsecureSkipVerify: true},
 		config["bind_dn"],

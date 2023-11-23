@@ -1,4 +1,5 @@
-package ldaphelper
+// go:build unit
+package ldapsearch
 
 import (
 	"crypto/tls"
@@ -49,9 +50,34 @@ func TestNewLdapsUrlOneScope(t *testing.T) {
 	assert.Equal(t, url.Scope, ldap.ScopeSingleLevel, "Scope does not match")
 }
 
-func TestDnToNs(t *testing.T) {
-	dn := "cn=Max File Descriptors,cn=Connections,cn=Monitor"
-	assert.Equal(t, DnToNs(dn), "Monitor.Connections.Max File Descriptors", "Converting DN to Namespace not working")
+func TestNewLDapUrlAdvanced(t *testing.T) {
+	s := "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#0#10#60#false"
+	url, err := NewLdapUrl(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, url.DerefAliases, 0, "Dereference Aliases not as expected")
+	assert.Equal(t, url.SizeLimit, 10, "Dereference Aliases not as expected")
+	assert.Equal(t, url.TimeLimit, 60, "Dereference Aliases not as expected")
+	assert.Equal(t, url.TypesOnly, false, "Dereference Aliases not as expected")
+
+}
+
+func TestNewLDapUrlDefaults(t *testing.T) {
+	s := ":///cn=search,o=base???####"
+	url, err := NewLdapUrl(s)
+	assert.Check(t, err != nil, "URL not parsable %v", err)
+	assert.Equal(t, url.Scheme, "ldaps", "Default Scheme not as expected")
+	assert.Equal(t, url.Hostname, "localhost", "Default Scheme not as expected")
+	assert.Equal(t, url.Port, "636", "Default Port not as expected")
+	assert.Equal(t, url.BaseDN, "dc=example,dc=org", "Default Base DN not as expected")
+	assert.Equal(t, url.Attributes[0], "*", "Default Attributes not as expected")
+	assert.Equal(t, url.Scope, 2, "Default Scope not as expected")
+	assert.Equal(t, url.Filter, "(objectClass=*)", "Default Filter not as expected")
+	assert.Equal(t, url.DerefAliases, 0, "Default Dereference Aliases not as expected")
+	assert.Equal(t, url.SizeLimit, 0, "Default Size limit not as expected")
+	assert.Equal(t, url.TimeLimit, 0, "Default Time limit not as expected")
+	assert.Equal(t, url.TypesOnly, false, "Default Types only not as expected")
 
 }
 

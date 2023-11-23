@@ -1,18 +1,18 @@
 package ldapsearch
 
 import (
-	"github.com/elastic/beats/v7/metricbeat/helper/ldaphelper"
+	"github.com/elastic/beats/v7/metricbeat/helper/ldapsearch"
 	"github.com/elastic/elastic-agent-libs/mapstr"
 	"github.com/go-ldap/ldap/v3"
 )
 
 func eventMapping(entries []*ldap.Entry, name string) []mapstr.M {
-	ldaphelper.SortSRbyDepth(entries)
+	ldapsearch.SortSRbyDepth(entries)
 
 	events := []mapstr.M{}
 	for idx, entry := range entries {
 		event := mapstr.M{}
-		ns := ldaphelper.DnToNs(entry.DN)
+		ns := ldapsearch.DnToNs(entry.DN)
 		for _, attr := range entry.Attributes {
 			event.Put(attr.Name, attr.Values[0])
 		}
@@ -20,10 +20,10 @@ func eventMapping(entries []*ldap.Entry, name string) []mapstr.M {
 			event.Put("entryDN", entry.DN)
 
 		}
-		event.Put("Namespace", ns)
-		event.Put("Search Name", name)
-		event.Put("Total", len(entries))
-		event.Put("Count", idx)
+		event.Put("namespace", ns)
+		event.Put("search Name", name)
+		event.Put("total", len(entries))
+		event.Put("count", idx)
 		events = append(events, event)
 	}
 	return events

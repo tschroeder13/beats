@@ -5,11 +5,27 @@
   metricsets: ["ldapsearch"]
   enabled: true
   period: 10s
+  # searches will be carried out against the hosts specified in ldapsearches.searches
+  # this is currently only the default
   hosts: ["localhost"]
-  ldapsearch.searches:
-    - name: "MDAD Drv - trace info"
-      url: "ldaps://fr05430vmx.fr.ge.conti.de:636/cn=MDAD,cn=driverset0,o=system?cn,DirXML-TraceLevel,DirXML-TraceFile?sub?(objectClass=DirXML-Driver)#never#10#60#false"
-      cert_path: "/home/uic75084/dev/IDM-D-CA.cer"
-      bind_dn: "${LDAP_USER}"
-      bind_pw: "${LDAP_PWD}"
+  # # consider using secrets keystore as described here:
+  # # https://www.elastic.co/guide/en/beats/metricbeat/current/keystore.html
+  # bind_dn: "${LDAP_USER}"
+  # bind_pw: "${LDAP_PWD}"
+
+  # # Optional SSL.
+  # # for further information see https://www.elastic.co/guide/en/beats/metricbeat/current/configuration-ssl.html
+  # # By default is off.
+  #ssl.enabled: true
+  # ssl.certificate_authorities: ["../some/relative/path"]
+  # ssl.certificate: ../some/relative/path
+  # ssl.key: ../some/relative/path
+  # ssl.key_passphrase: "${keyfile_passphrase}" ## see bind credentials for further info
+
+  # # configure 'ldapsearch' metricset's searches.
+  #ldapsearch.searches:
+  # # Every search needs an unique namespace,
+  # # which is later used for identification
+  #  - name: "some unique name"
+  #    url: "ldaps://your.ldap.host:636/cn=search,o=base?some,return,attributes,list?sub?(objectClass=inetOrgPerson)#never#10#60#false"
 

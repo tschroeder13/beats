@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
-	"github.com/elastic/beats/v7/metricbeat/helper/ldaphelper"
+	"github.com/elastic/beats/v7/metricbeat/helper/ldapsearch"
 	"github.com/elastic/beats/v7/metricbeat/mb"
 	"github.com/elastic/elastic-agent-libs/mapstr"
 	"github.com/elastic/elastic-agent-libs/transport/tlscommon"
@@ -67,7 +67,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	for _, s := range m.Searches {
 		if !m.TLS.IsEnabled() {
-			sr, err = ldaphelper.LdapSearch(s.LdapUrl,
+			sr, err = ldapsearch.LdapSearch(s.LdapUrl,
 				m.BindDN,
 				m.BindPW,
 			)
@@ -78,7 +78,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 			if err != nil {
 				return fmt.Errorf("could not load provided TLS configuration: %w", err)
 			}
-			sr, err = ldaphelper.LdapsSearch(s.LdapUrl,
+			sr, err = ldapsearch.LdapsSearch(s.LdapUrl,
 				tlsConfig.ToConfig(),
 				m.BindDN,
 				m.BindPW,

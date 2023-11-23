@@ -1,2 +1,18 @@
-This is the ldap module.
+This module collects data from LDAP servers.
 
+To collect metrics, {beatnane_uc} communicates with any LDAP enabled directory service.
+
+Its main purpose is to collect metrics from the virtual subtree "cn=Monitor"
+which is provided by servers like:
+
+* Open LDAP
+* RedHat / Fedora / 389 Directory Server
+* Sun / Oracle Directory Server Enterprise Edition
+* Novell / NetIQ eDirectory Server
+* IBM Tivoli Directory Server
+* OpenDj / OpenDS / Oracle Unified Directory
+
+[float]
+=== Compatibility
+
+The LDAP module is tested with openLDAP and NetIQ eDirectory but should work with any LDAP enabled server (excluding the mentioned cn=Monitor feature)
